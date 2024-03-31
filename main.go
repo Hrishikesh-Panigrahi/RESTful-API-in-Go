@@ -1,51 +1,24 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"log"
-	"net/http"
-	"github.com/gorilla/mux"
+	// "net/http"
+
+	"github.com/gin-gonic/gin"
+	// "github.com/Hrishikesh-Panigrahi/RESTful-API-in-Go/connectors"
+	"github.com/Hrishikesh-Panigrahi/RESTful-API-in-Go/initializers"
+	// "github.com/Hrishikesh-Panigrahi/RESTful-API-in-Go/middleware"
 )
 
-type Article struct {
-	Title string `json:"title"`
-	Desc string `json:"desc"`
-	Content string `json:"content"`
-}
-var Articles []Article
-
-func AllArticles(w http.ResponseWriter, r *http.Request){
-	// articles := Articles{
-	// 	Article{Title:"Test title", Desc:"Test description", Content:"Hello world"},
-	// }
-	fmt.Println("Article endpoint hit")
-	fmt.Fprintln(w, "hello")
-	json.NewEncoder(w).Encode(Articles)
+func init() {
+	initializers.LoadEnvVariables()
+	initializers.ConnectDB()
+	initializers.SyncDb()
 }
 
-func PostArticles(w http.ResponseWriter, r *http.Request){
-	fmt.Fprintf(w, "post Endpoint hit")
-}
-func homePage(w http.ResponseWriter, r *http.Request){
-	fmt.Fprintf(w, "Home page Endpoint hit")
-}
+func main() {
+	router := gin.Default()
+	// router.POST("/register", connectors.Register)
+	// router.POST("/login", connectors.Login)
 
-func handleRequest(){
-	myRouter := mux.NewRouter().StrictSlash(true)
-
-	myRouter.HandleFunc("/", homePage).Methods("GET")
-	myRouter.HandleFunc("/articles", AllArticles).Methods("GET")
-	myRouter.HandleFunc("/articles", PostArticles).Methods("POST")
-	log.Fatal(http.ListenAndServe(":8001", myRouter))
-}
-
-func main(){
-
-	Articles = []Article{
-        Article{Title: "Hello", Desc: "Article Description", Content: "Article Content"},
-        Article{Title: "Hello 2", Desc: "Article Description", Content: "Article Content"},
-    }
-
-	handleRequest()
+	router.Run()
 }
