@@ -28,8 +28,6 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	// password hash
-
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(b.Password), bcrypt.DefaultCost)
 
 	if err != nil {
